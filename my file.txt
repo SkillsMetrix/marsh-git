@@ -1,64 +1,58 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css'
+  selector: 'app-viewchild',
+  templateUrl: './viewchild.component.html',
+  styleUrl: './viewchild.component.css'
 })
-export class FooterComponent {
+export class ViewchildComponent {
+  message=''
+  count:number=0
 
-  uname = 'Manager'
-  profile = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1Mt89M8_63ktYoS9YKNrGR6hNQuQ5Z2Ikg&s'
-
-  addUser() {
-    alert('user added....!')
+  increment(){
+    this.count=this.count+1
+    this.message="Counter " + this.count
   }
-  loadPeople: any[] = [
+  decrement(){
+    this.count=this.count-1
+    this.message="Counter " + this.count
+  }
 
-    {
-      name: 'admin',
-      country: 'india'
-    },
-    {
-      name: 'manager',
-      country: 'uk'
-    },
-    {
-      name: 'qa',
-      country: 'usa'
-    }
-  ]
+}
+---
 
-  getColor(country: any) {
+<p>{{message}}</p>---
 
-    switch (country) {
-      case 'india':
-        return 'blue'
-      case 'usa':
-        return 'green'
-      case 'uk':
-        return 'pink'
-      default:
-        return null
-    }
+
+
+import { Component, ViewChild } from '@angular/core';
+import { ViewchildComponent } from '../viewchild/viewchild.component';
+
+@Component({
+  selector: 'app-viewchildmain',
+  templateUrl: './viewchildmain.component.html',
+  styleUrl: './viewchildmain.component.css'
+})
+export class ViewchildmainComponent {
+   @ViewChild(ViewchildComponent)
+  private vc={} as ViewchildComponent
+
+  inc(){
+    this.vc.increment()
+  }
+  dec(){
+    this.vc.decrement()
   }
 }
 
 
----------
 
+----------
 
-
-
-
-UserName:<input type="text" [(ngModel)]="uname"/>
-{{uname}}
-<hr>
-Profile: <img [src]="profile">
-
-<button (click)="addUser()">load</button>
+<app-viewchild></app-viewchild>
 
 <hr>
-<ul *ngFor="let person of loadPeople">
-    <li [ngStyle]="{'color':getColor(person.country)}">{{person.name}}</li>
-</ul>
+
+<button (click)="inc()">INC</button>
+
+<button (click)="dec()">DEC</button>
