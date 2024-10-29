@@ -1,9 +1,17 @@
-day 1 test
-https://forms.office.com/r/BKxbux2k4h
+<ul class="nav">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="login">Login</a>
+    </li>
 
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="register">Register</a>
+      </li>
 
-day1 feedback
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="userdetails">UserDetails</a>
+      </li>
 
-https://forms.office.com/r/q5j0NN4FB7
-
-
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="portfolio">Portfolio</a>
+      </li>
+    </ul>
