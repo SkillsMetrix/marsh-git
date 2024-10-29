@@ -1,17 +1,63 @@
-<ul class="nav">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="login">Login</a>
-    </li>
+import { Injectable } from "@angular/core";
+import { AppGuard } from "./AppGuard.guard";
+import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 
-    <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="register">Register</a>
-      </li>
 
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="userdetails">UserDetails</a>
-      </li>
 
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="portfolio">Portfolio</a>
-      </li>
-    </ul>
+@Injectable({
+  providedIn:'root'
+})
+export class UserData{
+
+  constructor(private ag:AppGuard,private route:Router,private http:HttpClient){}
+   
+    addUserToDB(data:any){
+     this.http.post("http://localhost:3000/users",data).subscribe((result)=>{
+      console.log(result);
+      
+     })
+      
+    
+    }
+    loadUsersFromDB(){
+      return this.http.get("http://localhost:3000/users")
+    }
+    login(data:any){
+
+    this.ag.isAllowed=true
+    this.route.navigateByUrl("/portfolio")
+      
+    }
+}
+
+-----------
+
+import { Component, OnInit } from '@angular/core';
+import { UserData } from '../shared/userdata.service';
+
+@Component({
+  selector: 'app-userdetails',
+  templateUrl: './userdetails.component.html',
+  styleUrl: './userdetails.component.css'
+})
+export class UserdetailsComponent implements OnInit {
+  ngOnInit(): void {
+    this.ud.loadUsersFromDB().subscribe((data) => {
+      this.users = data
+    })
+  }
+  users: any
+
+  constructor(private ud: UserData) { }
+
+}
+
+
+---------
+
+
+
+<ul>
+    <li *ngFor="let user of users">{{user.uname}}</li>
+</ul>
