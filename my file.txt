@@ -10,3 +10,45 @@ export class SummaryPipe implements PipeTransform {
         return value.substring(0, 20)
     }
 }
+
+
+-------
+
+import { CommonModule, CurrencyPipe, NumberSymbol, UpperCasePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { SummaryPipe } from '../summary.pipe';
+
+@Component({
+  selector: 'app-emp',
+  standalone: true,
+  imports: [CommonModule,SummaryPipe],
+  templateUrl: './emp.component.html',
+  styleUrl: './emp.component.css'
+})
+export class EmpComponent {
+
+  userData={
+    uname:'admin',
+    rating:4.6787,
+    income:9989888,
+    DOJ:new Date('11/11/2011'),
+    details:'this is a user details of project'
+
+  }
+
+}
+------
+
+
+<p>User Data</p>
+
+<ul>
+    <li>{{userData.uname | uppercase}}</li>
+    <li>{{userData.rating}}</li>
+    <li>{{userData.income | currency}}</li>
+    <li>{{userData.DOJ | date:'MM/yy'}}</li>
+    <li>{{userData.details | summary}}</li>
+
+
+
+</ul>
