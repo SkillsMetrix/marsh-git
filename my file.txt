@@ -1,36 +1,12 @@
-import { CommonModule, CurrencyPipe, NumberSymbol, UpperCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
-@Component({
-  selector: 'app-emp',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './emp.component.html',
-  styleUrl: './emp.component.css'
+@Pipe({
+    name: 'summary',
+    standalone: true
 })
-export class EmpComponent {
+export class SummaryPipe implements PipeTransform {
 
-  userData={
-    uname:'admin',
-    rating:4.6787,
-    income:9989888,
-    DOJ:new Date('11/11/2011')
-
-  }
-
+    transform(value: string) {
+        return value.substring(0, 20)
+    }
 }
----
-
-
-
-<p>User Data</p>
-
-<ul>
-    <li>{{userData.uname | uppercase}}</li>
-    <li>{{userData.rating}}</li>
-    <li>{{userData.income | currency}}</li>
-    <li>{{userData.DOJ}}</li>
-
-
-
-</ul>
