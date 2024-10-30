@@ -1,36 +1,15 @@
-import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
-import { ChildComponent } from '../child/child.component';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'app-parent',
-  templateUrl: './parent.component.html',
-  styleUrl: './parent.component.css'
-})
-export class ParentComponent {
+export class loggerInterceptor implements HttpInterceptor {
 
-  componentRef:any
-@ViewChild('show',{read:ViewContainerRef})entry:ViewContainerRef
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(`Request URL ${req.url}`);
 
-  constructor( private resolver:ComponentFactoryResolver){}
-
-  createComponent(userMessage){
-   const factory= this.resolver.resolveComponentFactory(ChildComponent)
-   this.componentRef=this.entry.createComponent(factory)
-   this.componentRef.instance.message=userMessage
-
+    return next.handle(req);
   }
+
 
 }
 
----------
-
-
-
-<template #show></template>
-
-
-<hr>
-
-<button (click)="createComponent('Message-1 to child')">Button-1</button>
-
-<button (click)="createComponent('Message-2 to child')">Button-2</button>
