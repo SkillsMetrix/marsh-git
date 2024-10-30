@@ -21,3 +21,16 @@ export class ParentComponent {
   }
 
 }
+
+---------
+
+
+
+<template #show></template>
+
+
+<hr>
+
+<button (click)="createComponent('Message-1 to child')">Button-1</button>
+
+<button (click)="createComponent('Message-2 to child')">Button-2</button>
