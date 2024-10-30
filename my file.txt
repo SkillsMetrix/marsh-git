@@ -1,54 +1,23 @@
+import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChildComponent } from '../child/child.component';
 
-import { Actions, createEffect, ofType } from '@ngrx/effects'
-import { } from '@ngrx/store'
-import { DataService } from 'src/app/Service/data.service'
-import { getMovies, getMoviesSuccess } from '../Actions/movie.action'
-import { exhaustMap, map } from 'rxjs/operators'
+@Component({
+  selector: 'app-parent',
+  templateUrl: './parent.component.html',
+  styleUrl: './parent.component.css'
+})
+export class ParentComponent {
 
-export class MovieEffects {
-    loadMovies$ = createEffect(() =>
-        this.action$.pipe(
-            ofType(getMovies),
-            exhaustMap(() =>
-                this.ds.getMovies().pipe(
-                    map((movies) => getMoviesSuccess(movies))
-                )
-            )
-        )
+  componentRef:any
+@ViewChild('show',{read:ViewContainerRef})entry:ViewContainerRef
 
-    )
-    constructor(private action$: Actions, private ds: DataService) { }
+  constructor( private resolver:ComponentFactoryResolver){}
+
+  createComponent(userMessage){
+   const factory= this.resolver.resolveComponentFactory(ChildComponent)
+   this.componentRef=this.entry.createComponent(factory)
+   this.componentRef.instance.message=userMessage
+
+  }
+
 }
--------
-
-
-import { createReducer, on } from '@ngrx/store'
-import { Movie } from 'src/app/Models/movie'
-import { addMovies, getMovies, getMoviesSuccess } from '../Actions/movie.action'
-
-export interface MovieState {
-
-    movies: ReadonlyArray<Movie>
-}
-
-const initialState: ReadonlyArray<Movie> = []
-
-export const movieReducer = createReducer(
-
-    initialState,
-    on(getMoviesSuccess, (state,movies) => movies),
-    on(addMovies,(state,movie) => [...state,movie])
-)
-
----
-
-
-
-
-import { createAction } from '@ngrx/store'
-import { Movie } from 'src/app/Models/movie'
-
-export const getMovies=createAction('Movie get ')
-export const getMoviesSuccess=createAction('Movie get Success ',
-(movies:ReadonlyArray<Movie>)=>movies)
-export const addMovies=createAction('Movie add ',(movie:Movie)=>movie )
