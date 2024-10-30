@@ -14,4 +14,15 @@ it('should create a new app',()=>{
     const app= ficture.componentInstance
     expect(app).toBeTruthy()
 })
+it('should check value of new app',()=>{
+    const ficture=TestBed.createComponent(TestcompComponent)
+    const app= ficture.componentInstance
+    expect(app.title).toBe('myapp')
+})
+it('should check template a new app',()=>{
+    const ficture=TestBed.createComponent(TestcompComponent)
+    ficture.detectChanges()
+    const compiled= ficture.nativeElement as HTMLElement
+    expect(compiled.querySelector('.content span')?.textContent).toContain('myap')
+})
 })
