@@ -1,54 +1,145 @@
-import { Pipe, PipeTransform } from "@angular/core";
 
-@Pipe({
-    name: 'summary',
-    standalone: true
-})
-export class SummaryPipe implements PipeTransform {
+import { createReducer, on } from '@ngrx/store'
+import { Movie } from 'src/app/Models/movie'
+import { getMovies } from '../Actions/movie.action'
 
-    transform(value: string) {
-        return value.substring(0, 20)
-    }
+export interface MovieState {
+
+    movies: ReadonlyArray<Movie>
 }
 
+const initialState: ReadonlyArray<Movie> = []
 
--------
+export const movieReducer = createReducer(
 
-import { CommonModule, CurrencyPipe, NumberSymbol, UpperCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { SummaryPipe } from '../summary.pipe';
+    initialState,
+    on(getMovies, (state) => [...mockMovies()])
+)
+function mockMovies(): Movie[] {
+    const movie = new Movie(
+        'Avengers: Endgame',
+        2798,
+        new Date('26 Apr, 2019 05:30:00')
+    );
+    movie.id = 1;
+
+    const movie1 = new Movie(
+        'Avengers: Infinity War',
+        2048,
+        new Date('27 Apr, 2018 05:30:00')
+    );
+    movie1.id = 2;
+
+    const movie2 = new Movie(
+        'Age of Ultron',
+        1403,
+        new Date('01 May, 2015 05:30:00')
+    );
+    movie2.id = 3;
+
+    const movies = [movie, movie1, movie2];
+    return movies;
+}
+
+-----------
+
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Movie } from './Models/movie';
+import { DataService } from './Service/data.service';
+import { addMovies, getMovies } from './Store/Actions/movie.action';
 
 @Component({
-  selector: 'app-emp',
-  standalone: true,
-  imports: [CommonModule,SummaryPipe],
-  templateUrl: './emp.component.html',
-  styleUrl: './emp.component.css'
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
-export class EmpComponent {
+export class AppComponent implements OnInit {
 
-  userData={
-    uname:'admin',
-    rating:4.6787,
-    income:9989888,
-    DOJ:new Date('11/11/2011'),
-    details:'this is a user details of project'
+  newMovie: Movie = new Movie();
+  title = 'movieApp';
+  constructor(private dataService: DataService, private store: Store) { }
 
+  ngOnInit(): void {
+    this.getAllMovies();
   }
 
+  getAllMovies(): void {
+    this.store.dispatch(getMovies())
+   
+  }
+
+  addNewMovies(): void {
+    this.store.dispatch(addMovies(this.newMovie))
+    this.dataService.addMovies(this.newMovie).subscribe((res) => {
+      this.getAllMovies();
+      this.newMovie = new Movie();
+    });
+  }
 }
-------
+
+----------
+
+<div style="padding: 20px;">
+  <div style="padding: 20px;">
+    <h2>Create movie</h2>
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Movie name</mat-label>
+        <input name='name' [(ngModel)]="newMovie.name" matInput>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Total earning</mat-label>
+        <input name='earning' [(ngModel)]="newMovie.earning" type='number' matInput placeholder="In million">
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Release date</mat-label>
+        <input name='releaseDate' [(ngModel)]="newMovie.releaseDate" matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button (click)="addNewMovies()" style="margin-left: 33%;" mat-raised-button color="primary">Add Movie</button>
+    </form>
+  </div>
+  <mat-divider></mat-divider>
+  <div style="padding: 20px;">
+    <app-movie-list></app-movie-list>
+  </div>
+</div>
+
+----
+
+import { Component, Input, OnInit } from '@angular/core';
+import { Movie } from '../Models/movie';
+import { DataService } from '../Service/data.service';
+import { Store } from '@ngrx/store';
+import { MovieState } from '../Store/Reducers/movie.reducer';
+
+@Component({
+  selector: 'app-movie-list',
+  templateUrl: './movie-list.component.html',
+  styleUrls: ['./movie-list.component.css'],
+})
+export class MovieListComponent implements OnInit {
+
+  movies$= this.store.select('movies')
+  constructor(private store:Store<MovieState>) {}
+
+  ngOnInit(): void {}
+}
 
 
-<p>User Data</p>
+--------
 
-<ul>
-    <li>{{userData.uname | uppercase}}</li>
-    <li>{{userData.rating}}</li>
-    <li>{{userData.income | currency}}</li>
-    <li>{{userData.DOJ | date:'MM/yy'}}</li>
-    <li>{{userData.details | summary}}</li>
+<div class="movies">
+    <section *ngFor="let movie of movies$ | async">
+        <mat-card>
+            <h1> {{movie.name}} </h1>
+            <h2> {{ movie.releaseDate | date }} </h2>
+            <h3> ${{ movie.earning }} million </h3>
+        </mat-card>
+    </section>
+</div>
 
-
-
-</ul>
