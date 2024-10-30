@@ -1,15 +1,17 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
-export class loggerInterceptor implements HttpInterceptor {
+import { TestBed } from '@angular/core/testing'
+import { TestcompComponent } from './testcomp.component'
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(`Request URL ${req.url}`);
+// test suite
 
-    return next.handle(req);
-  }
+describe('test suite begins',()=>{
+    //test case
+beforeEach(()=> TestBed.configureTestingModule({
 
-
-}
-
+}))
+it('should create a new app',()=>{
+    const ficture=TestBed.createComponent(TestcompComponent)
+    const app= ficture.componentInstance
+    expect(app).toBeTruthy()
+})
+})
